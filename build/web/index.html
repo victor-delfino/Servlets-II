@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>Materias</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.js"></script>
+    </head>
+    
+    <body>
+        <div id="app">
+    <h1>Nome das Materias</h1>
+    <input type="text" v-model="newMateria"/>
+    <button @click="add()">+</button>
+        <ul>
+        <li v-for="item in items" :key="item">
+            {{ item }}
+            <button @click="remove(items.indexOf(item))">-</button>
+        </li>
+    </ul>
+</div>
+
+<script>
+  const { createApp} = Vue;
+
+  createApp({
+    data() {
+      return {
+        items: [],
+        newMateria: ''
+      };
+    },
+    async created() {
+        await this.fetchData();
+    },
+    methods: {
+        async fetchData(materia, indexToRemove) {
+            var url = 'victor.json';
+            if(materia) url = url +'?addMateria&materia=' + materia;
+            if(indexToRemove >= 0) url = url + '?removeMateria=&i=' + indexToRemove;
+            const response = await fetch(url);
+            const data = await response.json();
+            this.items = data.materias;
+        },
+        add(){
+            this.fetchData(this.newMateria);
+            this.newMateria = '';
+        },
+        remove(i){
+            this.fetchData(null, i);
+        }
+    }
+  }).mount('#app');
+</script>    
+    </body>
+</html>
