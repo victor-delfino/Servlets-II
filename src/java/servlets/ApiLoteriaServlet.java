@@ -11,9 +11,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,20 +23,10 @@ import org.json.JSONObject;
  *
  * @author hugod
  */
-@WebServlet(name = "ApíVictorServlet", urlPatterns = {"/victor.json"})
-public class ApiVictorServlet extends HttpServlet {
-    private final String ra = "1290482312048";  
-    private final String nome = "Victor";
-     private final List<String> materias = Arrays.asList(
-        "Metodologia da Pesquisa Científico-Tecnológica",
-        "Sistemas Operacionais II",
-        "Linguagem de Programação IV - INTERNET",
-        "Programação Orientada a Objetos",
-        "Engenharia de Software III",
-        "Banco de Dados"
-    );
-    
-     /** Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+@WebServlet(name = "ApiLoteriaServlet", urlPatterns = {"/loteria.json"})
+public class ApiLoteriaServlet extends HttpServlet {
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
      * @param request servlet request
@@ -46,21 +38,26 @@ public class ApiVictorServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         
-      
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String dateTime = now.format(formatter);
         
+        Set<Integer> numbers = new HashSet<>();
+        Random random = new Random();
+        
+        while(numbers.size() < 6) {
+            numbers.add(random.nextInt(60) + 1);
+        }
+        JSONArray numberArr = new JSONArray();
+        for(int number: numbers) {
+            numberArr.put(number);
+        }
+        
+        JSONObject obj =  new JSONObject();
+        obj.put("dateTime", dateTime);
+        obj.put("numbers", numberArr);
+                
         try (PrintWriter out = response.getWriter()) {
-            JSONObject obj = new JSONObject();
-            obj.put("RA", ra);
-            obj.put("Nome", nome);
-            
-            JSONArray arr = new JSONArray();
-            for(String e : materias) {
-                arr.put(e);
-            }
-            
-            
-            obj.put("materias", arr);
-            
             out.println(obj.toString());
         }
     }

@@ -25,36 +25,25 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
 </div>
 
 <script>
-  const { createApp} = Vue;
+  const { createApp } = Vue;
 
   createApp({
     data() {
       return {
-        items: [],
-        newMateria: ''
+        items: []
       };
     },
     async created() {
-        await this.fetchData();
+      await this.fetchData();
     },
     methods: {
-        async fetchData(materia, indexToRemove) {
-            var url = 'victor.json';
-            if(materia) url = url +'?addMateria&materia=' + materia;
-            if(indexToRemove >= 0) url = url + '?removeMateria=&i=' + indexToRemove;
-            const response = await fetch(url);
-            const data = await response.json();
-            this.items = data.materias;
-        },
-        add(){
-            this.fetchData(this.newMateria);
-            this.newMateria = '';
-        },
-        remove(i){
-            this.fetchData(null, i);
-        }
+      async fetchData() {
+        const response = await fetch('victor.json');
+        const data = await response.json();
+        this.items = data.materias;
+      }
     }
   }).mount('#app');
-</script>    
+</script>   
     </body>
 </html>
